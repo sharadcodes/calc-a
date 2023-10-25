@@ -54,6 +54,10 @@
         font-size: 1.5rem;
         font-weight: 900;
       }
+      #days-to-attend {
+        font-size: 2rem;
+        font-weight: 900;
+      }
     </style>
   </head>
   <body>
@@ -75,6 +79,7 @@
           id="target-attendance"
           placeholder="Enter the target attendance"
           min="0"
+          value="75"
         />
         <label for="present-days">Number of days present:</label>
         <input
@@ -102,14 +107,19 @@
     </main>
     <script>
       function calculateDayToAttend(targetAttendance, presentDays, totalDays) {
-        let daysToAttend = 0;
-        let currentAttendance = 0;
-        while (true) {
-          daysToAttend += 1;
-          currentAttendance =
-            ((presentDays + daysToAttend) / (totalDays + daysToAttend)) * 100;
+        let left = 0;
+        let right = 365;
+        let daysToAttend = -1;
+        while (left <= right) {
+          const mid = Math.floor((left + right) / 2);
+          const currentAttendance =
+            ((presentDays + mid) / (totalDays + mid)) * 100;
+          console.log(currentAttendance);
           if (currentAttendance >= targetAttendance) {
-            break;
+            daysToAttend = mid;
+            right = mid - 1;
+          } else {
+            left = mid + 1;
           }
         }
         return daysToAttend;
@@ -134,9 +144,11 @@
           PRESENT_DAYS,
           TOTAL_DAYS
         );
-        document.querySelector(
-          "#days-to-attend"
-        ).textContent = `You need to attend ${daysToAttend} more days to achieve your target attendance.`;
+        const message =
+          daysToAttend === 0
+            ? `You have already achieved your target attendance of ${TARGET_ATTENDANCE}%`
+            : `You need to attend ${daysToAttend} more days to achieve your target attendance.`;
+        document.querySelector("#days-to-attend").textContent = message;
       });
     </script>
   </body>
