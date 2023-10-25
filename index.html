@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Attendance Target Calculator</title>
+    <style>
+      * {
+        font-family: monospace;
+      }
+      body {
+        padding: 1rem;
+      }
+      h1 {
+        text-align: center;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      form > * {
+        margin: 0.5rem;
+      }
+      input {
+        width: 100%;
+        max-width: 100%;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid #ccc;
+        font-size: 2rem;
+      }
+      button {
+        padding: 1rem;
+        border-radius: 0.25rem;
+        background-color: lightblue;
+        cursor: pointer;
+        font-size: 2rem;
+      }
+      button:hover {
+        background-color: #ccc;
+      }
+      button:active {
+        background-color: #aaa;
+      }
+      p {
+        text-align: center;
+      }
+      main {
+        max-width: 50rem;
+        margin: 0 auto;
+      }
+      label {
+        font-size: 1.5rem;
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Attendance Target Calculator</h1>
+      <p>
+        This calculator will help you to calculate the number of days you need
+        to attend to achieve your target attendance.
+      </p>
+      <p>
+        <strong>NOTE:</strong> This calculator assumes that you will be present
+        for all the remaining days.
+      </p>
+      <form id="attendance-target-calculator">
+        <label for="target-attendance">Target Attendance:</label>
+        <input
+          type="number"
+          name="target-attendance"
+          id="target-attendance"
+          placeholder="Enter the target attendance"
+          min="0"
+        />
+        <label for="present-days">Number of days present:</label>
+        <input
+          type="number"
+          name="present-days"
+          id="present-days"
+          placeholder="Enter the number of days present"
+          min="0"
+        />
+        <br />
+        <label for="total-days">Total number of days:</label>
+        <input
+          type="number"
+          name="total-days"
+          id="total-days"
+          placeholder="Enter the total number of days"
+          min="0"
+        />
+        <br />
+        <button type="submit">Calculate</button>
+      </form>
+      <p>
+        <span id="days-to-attend"></span>
+      </p>
+    </main>
+    <script>
+      function calculateDayToAttend(targetAttendance, presentDays, totalDays) {
+        let daysToAttend = 0;
+        let currentAttendance = 0;
+        while (true) {
+          daysToAttend += 1;
+          currentAttendance =
+            ((presentDays + daysToAttend) / (totalDays + daysToAttend)) * 100;
+          if (currentAttendance >= targetAttendance) {
+            break;
+          }
+        }
+        return daysToAttend;
+      }
+
+      const form = document.querySelector("#attendance-target-calculator");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const TARGET_ATTENDANCE = Number(
+          document.querySelector("#target-attendance").value
+        );
+        const PRESENT_DAYS = Number(
+          document.querySelector("#present-days").value
+        );
+        const TOTAL_DAYS = Number(document.querySelector("#total-days").value);
+        if (TARGET_ATTENDANCE === 0 || PRESENT_DAYS === 0 || TOTAL_DAYS === 0) {
+          alert("Please enter valid values.");
+          return;
+        }
+        const daysToAttend = calculateDayToAttend(
+          TARGET_ATTENDANCE,
+          PRESENT_DAYS,
+          TOTAL_DAYS
+        );
+        document.querySelector(
+          "#days-to-attend"
+        ).textContent = `You need to attend ${daysToAttend} more days to achieve your target attendance.`;
+      });
+    </script>
+  </body>
+</html>
